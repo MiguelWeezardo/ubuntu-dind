@@ -1,9 +1,22 @@
 FROM ubuntu:20.04
 
+ARG DEBIAN_FRONTEND=noninteractive
+ARG NODE_VERSION="12 16"
+ARG DISTRO=ubuntu
+ARG TYPE=act
+
 RUN apt update \
+    && apt-get install -y tzdata \
     && apt install -y ca-certificates openssh-client \
-    wget curl iptables supervisor \
+    wget curl iptables supervisor jq ssh lsb-release \
+    gawk curl git jq wget sudo gnupg-agent ca-certificates \
+    software-properties-common apt-transport-https libyaml-0-2 \
+    zstd zip unzip xz-utils \
     && rm -rf /var/lib/apt/list/*
+
+COPY install_nodejs.sh ./install_nodejs.sh
+
+RUN chmod 755 ./install_nodejs.sh && ./install_nodejs.sh
 
 ENV DOCKER_CHANNEL=stable \
 	DOCKER_VERSION=20.10.9 \
